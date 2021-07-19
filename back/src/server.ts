@@ -4,7 +4,7 @@ dotenv.config({
 	path: `${__dirname}/../config.env`,
 });
 const app = express();
-const PORT = process.env.PORT as string;
+const PORT = process.env.PORT;
 
 app.get("/", (_, res) => {
 	res.status(200).json({
