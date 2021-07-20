@@ -1,7 +1,7 @@
 const Header = () => {
   return (
-    <div className="font-medium text-2xl text-red-600" style={{ height: "15vh" }}>
-      Visio-app
+    <div style={{ height: "15vh" }}>
+      <h1 className="font-medium text-xl p-2 px-4">Visio-app</h1>
     </div>
   );
 };
