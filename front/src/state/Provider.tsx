@@ -2,10 +2,28 @@ import { useReducer, createContext } from "react";
 
 export interface IState {}
 
-const initialState: IState = {};
+const initialState: IState = {
+  media: null,
+  loadingMedia: true,
+};
 
-const reducer = (state: IState, action: string) => {
-  switch (action) {
+interface IPayload {
+  type: string;
+  payload: any;
+}
+
+const reducer = (state: IState, action: IPayload) => {
+  switch (action.type) {
+    case "SET_MEDIA":
+      return {
+        ...state,
+        media: action.payload,
+      };
+    case "SET_LOADING_MEDIA":
+      return {
+        ...state,
+        loadingMedia: action.payload,
+      };
     default:
       return state;
   }
