@@ -5,6 +5,7 @@ export interface IState {}
 const initialState: IState = {
   media: null,
   loadingMedia: true,
+  activeRooms: [],
 };
 
 interface IPayload {
@@ -23,6 +24,11 @@ const reducer = (state: IState, action: IPayload) => {
       return {
         ...state,
         loadingMedia: action.payload,
+      };
+    case "CREATE_NEW_ROOM":
+      return {
+        ...state,
+        activeRooms: action.payload,
       };
     default:
       return state;

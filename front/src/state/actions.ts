@@ -7,3 +7,8 @@ export const setLoadingMediaAction = (isLoading: boolean) => ({
   type: "SET_LOADING_MEDIA",
   payload: isLoading,
 });
+
+export const createNewRoom = (roomId: number) => ({
+  type: "CREATE_NEW_ROOM",
+  payload: roomId,
+});
