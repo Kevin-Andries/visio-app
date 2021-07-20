@@ -1,8 +1,15 @@
+// Components
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import VideoStreamingSpace from "../components/VideoStreamingSpace";
+
 const Room = () => {
   return (
-    <>
-      <p>VISIO ROOM</p>
-    </>
+    <div className="h-screen flex flex-col justify-between">
+      <Header />
+      <VideoStreamingSpace />
+      <Footer />
+    </div>
   );
 };
 
