@@ -1,8 +1,10 @@
 import { useEffect, useState, useContext } from "react";
-// Components
-
-import Header from "./components/Header";
+import { Switch, Route } from "react-router-dom";
 import { ContextState } from "./state/Provider";
+// Views
+import Home from "./views/Home";
+import Room from "./views/Room";
+import Contact from "./views/Contact";
 
 function App() {
   const [media, setMedia] = useState<MediaStream>();
@@ -25,13 +27,19 @@ function App() {
 
   return (
     <>
-      <Header />
-      <div style={{ height: "70vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-        <button className="text-white bg-blue-600 font-light text-2xl rounded-lg p-2 px-8 shadow-xl" style={{ marginBottom: "10px" }}>
-          Create a room
-        </button>
-        <button className="text-blue-600 border-2 border-blue-600 rounded-lg p-2 px-4 shadow-xl mt-2">Join a room</button>
-      </div>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+
+        <Route exact path="/contact">
+          <Contact />
+        </Route>
+
+        <Route path="/:roomId">
+          <Room />
+        </Route>
+      </Switch>
     </>
   );
 }
