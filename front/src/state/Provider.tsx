@@ -1,6 +1,10 @@
 import { useReducer, createContext } from "react";
 
-export interface IState {}
+export interface IState {
+  media: MediaStream | null;
+  loadingMedia: boolean;
+  activeRooms: string[];
+}
 
 const initialState: IState = {
   media: null,
@@ -28,9 +32,10 @@ const reducer = (state: IState, action: IPayload) => {
     case "CREATE_NEW_ROOM":
       return {
         ...state,
-        activeRooms: action.payload,
+        activeRooms: [...state.activeRooms, action.payload],
       };
     default:
+      console.error("Action not found in reducer");
       return state;
   }
 };
@@ -43,8 +48,8 @@ interface IProps {
 
 const ContextProvider = ({ children }: IProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const value: any = { state, dispatch };
 
-  const value = { state, dispatch };
   return <ContextState.Provider value={value}>{children}</ContextState.Provider>;
 };
 

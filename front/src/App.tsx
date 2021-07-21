@@ -9,7 +9,7 @@ import Room from "./views/Room";
 import Contact from "./views/Contact";
 
 function App() {
-  const { state, dispatch } = useContext<any>(ContextState);
+  const { /* state, */ dispatch } = useContext<any>(ContextState);
 
   // We request user's permission to use microphone and webcam on start
   useEffect(() => {
@@ -26,7 +26,7 @@ function App() {
   }, [dispatch]);
 
   // log media object in console once it's set
-  useEffect(() => console.log("Media object: ", state), [state]);
+  //useEffect(() => console.log("State: ", state), [state]);
 
   return (
     <>
