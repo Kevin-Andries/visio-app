@@ -10,7 +10,7 @@ const JoinRoomModal = ({ show, toggle, handleJoinRoomSubmit, updateJoinRoomInput
   show ? (
     <>
       <div onClick={toggle} className="fixed h-screen w-screen top-0 l-0 bg-black opacity-70"></div>
-      <div className="fixed transform translate-x-2/4 -translate-y-2/4 right-2/4 top-2/4">
+      <div className="fixed transform translate-x-2/4 -translate-y-2/4 right-2/4 top-2/4 w-80">
         <span onClick={toggle} className="absolute right-4 top-3 cursor-pointer">
           &#x274C;
         </span>

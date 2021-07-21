@@ -15,7 +15,12 @@ const Home = () => {
   const history = useHistory();
 
   const showError = () => {
-    return !state.loadingMedia && !state.media && <p className="text-red-500 text-center">No cam/micro available !</p>;
+    return (
+      !state.loadingMedia &&
+      !state.media && (
+        <p className="fixed transform translate-x-2/4 -translate-y-2/4 right-2/4 top-40 text-red-500">No cam/micro available !</p>
+      )
+    );
   };
 
   const handleCreateRoom = async () => {
