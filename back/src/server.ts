@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
-import app from "./app";
+import server from "./app";
+
 dotenv.config({
   path: `${__dirname}/../config.env`,
 });
@@ -7,6 +8,6 @@ dotenv.config({
 const PORT = process.env.PORT;
 
 // Starting server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
