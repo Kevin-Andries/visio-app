@@ -15,7 +15,7 @@ const Chat = () => {
       </div>
       <form className="flex m-5 mt-2" onSubmit={handleSubmit}>
         <input type="text" className="border-2 rounded-lg mr-3 w-full p-2 outline-none" />
-        <input type="submit" className="p-3 rounded-lg bg-blue-600 text-white" />
+        <input type="submit" className="p-3 rounded-lg bg-blue-600 text-white cursor-pointer" />
       </form>
     </div>
   );
