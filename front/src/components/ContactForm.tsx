@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import "../styles/ContactForm.css";
+import "../styles/ContactForm.module.css";
 
 interface MyFormValues {
   firstName: string;

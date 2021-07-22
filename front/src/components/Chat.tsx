@@ -24,8 +24,11 @@ const Chat = () => {
   return (
     <div className="h-full mx-5 w-1/3 rounded-xl border-2 flex flex-col justify-end relative">
       {!state.userName && <div className="h-full w-fulltop-0 l-0 bg-black opacity-70 z-10 rounded-lg"></div>}
-      {state.userName && <MessagesPanel handleSubmit={handleSubmit} />}
-      {!state.userName && <SetUserNameModal setNewUser={setNewUser} updateName={updateName} />}
+      {state.userName ? (
+        <MessagesPanel handleSubmit={handleSubmit} />
+      ) : (
+        <SetUserNameModal setNewUser={setNewUser} updateName={updateName} />
+      )}
     </div>
   );
 };
