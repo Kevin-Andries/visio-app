@@ -1,5 +1,4 @@
-import { useContext, useState, useEffect } from "react";
-import { io } from "socket.io-client";
+import { useContext, useState } from "react";
 // Components
 import { ContextState } from "../state/Provider";
 import { setUserName } from "../state/actions";
@@ -9,13 +8,6 @@ import SetUserNameModal from "./SetUserNameModal";
 const Chat = () => {
   const [user, setUser] = useState("");
   const { state, dispatch } = useContext<any>(ContextState);
-  const socket = io("http://localhost:3001");
-
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log("connected to the backend!");
-    });
-  }, [socket]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
