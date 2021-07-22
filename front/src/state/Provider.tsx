@@ -4,12 +4,14 @@ export interface IState {
   media: MediaStream | null;
   loadingMedia: boolean;
   activeRooms: string[];
+  userName: string;
 }
 
 const initialState: IState = {
   media: null,
   loadingMedia: true,
   activeRooms: [],
+  userName: "",
 };
 
 interface IPayload {
@@ -33,6 +35,11 @@ const reducer = (state: IState, action: IPayload) => {
       return {
         ...state,
         activeRooms: [...state.activeRooms, action.payload],
+      };
+    case "SET_USER_NAME":
+      return {
+        ...state,
+        userName: action.payload,
       };
     default:
       console.error("Action not found in reducer");
