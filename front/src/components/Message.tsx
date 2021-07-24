@@ -1,13 +1,11 @@
-const Message = () => {
+import { IMessage } from "../utils/interfaces";
+
+const Message = ({ author, msgText }: IMessage) => {
   return (
-    <>
-      <p className="mb-3">
-        <span className="font-bold">Jon: </span> Hey, how are you ?
-      </p>
-      <p>
-        <span className="font-bold">Kevin: </span> Good, and you ?
-      </p>
-    </>
+    <div className="mb-3">
+      <p className="font-bold">{author}</p>
+      <p>{msgText}</p>
+    </div>
   );
 };
 

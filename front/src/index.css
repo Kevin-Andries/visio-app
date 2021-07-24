@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-input:focus-visible {
+/* input:focus-visible {
   border: none;
   outline: none;
   border-bottom: 1px solid grey;
-}
+} */

@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 // Components
 import { ContextState } from "../state/Provider";
-import { createNewRoom } from "../state/actions";
+import { createNewRoomAction } from "../state/actions";
 import Header from "../components/Header";
 import JoinRoomModal from "../components/JoinRoomModal";
 import Footer from "../components/Footer";
@@ -24,9 +24,9 @@ const Home = () => {
   };
 
   const handleCreateRoom = async () => {
-    const { roomId } = await fetch("http://localhost:3001/room", { method: "POST" }).then((res) => res.json());
+    const { roomId } = await fetch("http://localhost:3001/room").then((res) => res.json());
 
-    dispatch(createNewRoom(roomId));
+    dispatch(createNewRoomAction(roomId));
     history.push(`/${roomId}`);
   };
 

@@ -4,14 +4,16 @@ export interface IState {
   media: MediaStream | null;
   loadingMedia: boolean;
   activeRooms: string[];
-  userName: string;
+  roomId: string;
+  username: string;
 }
 
 const initialState: IState = {
   media: null,
   loadingMedia: true,
   activeRooms: [],
-  userName: "",
+  roomId: "",
+  username: "",
 };
 
 interface IPayload {
@@ -35,11 +37,17 @@ const reducer = (state: IState, action: IPayload) => {
       return {
         ...state,
         activeRooms: [...state.activeRooms, action.payload],
+        roomId: action.payload,
+      };
+    case "JOIN_ROOM":
+      return {
+        ...state,
+        roomId: action.payload,
       };
     case "SET_USER_NAME":
       return {
         ...state,
-        userName: action.payload,
+        username: action.payload,
       };
     default:
       console.error("Action not found in reducer");

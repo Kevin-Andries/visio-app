@@ -8,12 +8,17 @@ export const setLoadingMediaAction = (isLoading: boolean) => ({
   payload: isLoading,
 });
 
-export const createNewRoom = (roomId: number) => ({
+export const createNewRoomAction = (roomId: number) => ({
   type: "CREATE_NEW_ROOM",
   payload: roomId,
 });
 
-export const setUserName = (userName: string) => ({
+export const setUserNameAction = (username: string) => ({
   type: "SET_USER_NAME",
-  payload: userName,
+  payload: username,
+});
+
+export const joinRoomAction = (roomId: string) => ({
+  type: "JOIN_ROOM",
+  payload: roomId,
 });
