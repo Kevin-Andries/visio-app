@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { ContextState } from "../state/Provider";
 import { setUserNameAction } from "../state/actions";
 
-const SetUserNameModal = () => {
+const SetUsernameModal = () => {
   const [username, setUsername] = useState<string>("");
   const { dispatch } = useContext<any>(ContextState);
 
@@ -11,21 +11,24 @@ const SetUserNameModal = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-
-    dispatch(setUserNameAction(username));
+    if (username) {
+      dispatch(setUserNameAction(username));
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="absolute flex flex-col top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white z-50 p-5 rounded-lg"
-      style={{ width: "85%" }}>
-      <input onChange={updateName} className="mb-4" type="text" name="userName" placeholder="Type your name" />
-      <button type="submit" className="p-3 rounded-lg bg-blue-600 text-white">
-        Join chat
-      </button>
-    </form>
+    <>
+      <div className="fixed h-screen w-screen top-0 l-0 bg-black opacity-70 z-10"></div>
+      <div className="fixed transform translate-x-2/4 -translate-y-2/4 right-2/4 top-2/4 w-80 z-20">
+        <form onSubmit={handleSubmit} className="flex bg-white p-12 flex-col rounded-lg ">
+          <input onChange={updateName} className="mb-4" type="text" name="userName" placeholder="Type your name" />
+          <button type="submit" className="p-3 rounded-lg bg-blue-600 text-white">
+            Save
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
 
-export default SetUserNameModal;
+export default SetUsernameModal;

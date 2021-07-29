@@ -2,7 +2,6 @@ import { useContext, useState, useEffect } from "react";
 import { Socket } from "socket.io-client";
 // Components
 import MessagesPanel from "./MessagesPanel";
-import SetUserNameModal from "./SetUserNameModal";
 // Misc
 import { ContextState } from "../state/Provider";
 import { IMessage } from "../utils/interfaces";
@@ -34,9 +33,8 @@ const Chat = ({ socket }: IProps) => {
   };
 
   return (
-    <div className="h-full mx-5 w-1/3 rounded-xl border-2 flex flex-col justify-end relative">
-      {!state.username && <div className="h-full w-fulltop-0 l-0 bg-black opacity-70 z-10 rounded-lg"></div>}
-      {state.username ? <MessagesPanel messages={messages} handleSubmitMsg={handleSubmitMsg} /> : <SetUserNameModal />}
+    <div className="h-full mx-5 w-1/3 rounded-xl border-2 flex flex-col justify-end relative overflow-y-scroll">
+      <MessagesPanel messages={messages} handleSubmitMsg={handleSubmitMsg} />
     </div>
   );
 };

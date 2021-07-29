@@ -11,7 +11,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
   },
 });
 
@@ -33,13 +33,26 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("msg", { author, msgText });
   });
 
+  /**  WebRTC **/
+  socket.on("offer", (roomId, offer) => {
+    socket.to(roomId).emit("sdp-offer", offer);
+  });
+
+  socket.on("answer", (roomId, answer) => {
+    socket.to(roomId).emit("sdp-answer", answer);
+  });
+
+  socket.on("ice", (roomId, ice) => {
+    socket.to(roomId).emit("ice-transfer", ice);
+  });
+
   socket.on("disconnect", () => {
     console.log(`Closed socket: ${socket.id}`);
   });
 });
 
 // Middlewares
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: "*" }));
 app.use(morgan("tiny"));
 app.use(express.json());
 

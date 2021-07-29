@@ -5,6 +5,7 @@ export interface IState {
   loadingMedia: boolean;
   activeRooms: string[];
   roomId: string;
+  hasCreatedRoom: boolean;
   username: string;
 }
 
@@ -13,6 +14,7 @@ const initialState: IState = {
   loadingMedia: true,
   activeRooms: [],
   roomId: "",
+  hasCreatedRoom: false,
   username: "",
 };
 
@@ -38,6 +40,7 @@ const reducer = (state: IState, action: IPayload) => {
         ...state,
         activeRooms: [...state.activeRooms, action.payload],
         roomId: action.payload,
+        hasCreatedRoom: true,
       };
     case "JOIN_ROOM":
       return {
@@ -45,6 +48,7 @@ const reducer = (state: IState, action: IPayload) => {
         roomId: action.payload,
       };
     case "SET_USER_NAME":
+      localStorage.setItem("username", action.payload);
       return {
         ...state,
         username: action.payload,

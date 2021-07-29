@@ -1,7 +1,7 @@
 import { useEffect, useContext } from "react";
 import { Switch, Route } from "react-router-dom";
 // Components
-import { setLoadingMediaAction, setMediaAction } from "./state/actions";
+import { setLoadingMediaAction, setMediaAction, setUserNameAction } from "./state/actions";
 import { ContextState } from "./state/Provider";
 // Views
 import Home from "./views/Home";
@@ -12,7 +12,10 @@ function App() {
   const { /* state, */ dispatch } = useContext<any>(ContextState);
 
   // We request user's permission to use microphone and webcam on start
+  // and check if there is a username in localStorage
   useEffect(() => {
+    dispatch(setUserNameAction(localStorage.getItem("username") || ""));
+
     (async () => {
       try {
         const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });

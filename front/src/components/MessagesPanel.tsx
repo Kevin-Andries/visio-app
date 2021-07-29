@@ -20,16 +20,24 @@ const MessagesPanel = ({ messages, handleSubmitMsg }: IProps) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
-    handleSubmitMsg(msgText);
-    setMsgText("");
+    if (msgText) {
+      handleSubmitMsg(msgText);
+      setMsgText("");
+    }
   };
-
+  // className="break-words"
   return (
     <>
-      <div className="overflow-y-scroll py-4 pl-4">
-        {messages.map((message: any) => (
-          <Message key={uuid()} author={message.author} msgText={message.msgText} />
-        ))}
+      <div className="py-4 pl-4">
+        {messages.map((message: IMessage, i: number, array: any) => {
+          let showAuthor = true;
+
+          if (array[i - 1] && array[i - 1].author === message.author) {
+            showAuthor = false;
+          }
+
+          return <Message key={uuid()} author={message.author} msgText={message.msgText} showAuthor={showAuthor} />;
+        })}
       </div>
 
       <form className="flex m-5 mt-2" onSubmit={handleSubmit}>
