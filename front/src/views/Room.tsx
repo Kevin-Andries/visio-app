@@ -10,6 +10,7 @@ import SetUsernameModal from "../components/SetUsernameModal";
 // Misc
 import { ContextState } from "../state/Provider";
 import { joinRoomAction } from "../state/actions";
+import { useRef } from "react";
 
 const RTCConfig = {
   iceServers: [
@@ -30,6 +31,7 @@ const Room = () => {
   const history = useHistory();
   const [socketState, setSocket] = useState<any>();
   const [roomId] = useState(history.location.pathname.substring(1));
+  const remoteStreamRef = useRef<MediaStream>(new MediaStream());
   //const [pc, setPc] = useState<RTCPeerConnection[]>([]);
 
   // When we join a room, we connect to socket
@@ -55,6 +57,8 @@ const Room = () => {
             }
           };
 
+          peerConnection.ontrack = (e) => e.streams[0].getTracks().forEach((track) => remoteStreamRef.current.addTrack(track));
+
           socket.on("ice-transfer", (ice) => {
             console.log("received ice");
             const candidate = new RTCIceCandidate(ice);
@@ -63,6 +67,10 @@ const Room = () => {
 
           socket.on("sdp-offer", (sdp) => {
             console.log("RECEIVED OFFER, CREATING ANSWER");
+
+            if (state.media) {
+              state.media.getTracks().forEach((track: any) => peerConnection.addTrack(track, state.media));
+            }
 
             peerConnection.ondatachannel = (e: any) => {
               e.channel.onopen = () => {
@@ -73,7 +81,6 @@ const Room = () => {
                 console.log("MESSAGE ON DATA CHANNEL: ", msg.data);
                 e.channel.send("Hello back");
               };
-              //console.log("CHANNEL MSG", e);
             };
 
             const sdpObj = new RTCSessionDescription(sdp);
@@ -94,12 +101,17 @@ const Room = () => {
           // If user is not creator of room, he creates offer
           if (!state.hasCreatedRoom) {
             console.log("CREATING OFFER");
+
+            if (state.media) {
+              state.media.getTracks().forEach((track: any) => peerConnection.addTrack(track, state.media));
+            }
+
             channel = peerConnection.createDataChannel("channel");
 
             channel.addEventListener("message", (msg: MessageEvent) => console.log(msg.data));
 
             setTimeout(() => {
-              //channel.send("Hello World");
+              channel.send("Hello World");
               console.log("message sent");
             }, 1000);
 
@@ -118,7 +130,7 @@ const Room = () => {
         socket.close();
       }
     };
-  }, [roomId, dispatch, state.username, state.hasCreatedRoom]);
+  }, [roomId, dispatch, state.username, state.hasCreatedRoom, state.media]);
 
   return (
     <div className="h-screen flex flex-col justify-between ">
@@ -126,7 +138,7 @@ const Room = () => {
       <h2 className="text-center font-bold text-3xl">ROOM NAME</h2>
       {!state.username && <SetUsernameModal />}
       <div className="flex" style={{ height: "90%" }}>
-        <VideoStreamingSpace />
+        <VideoStreamingSpace localStream={state.media} remoteStream={remoteStreamRef.current} />
         <Chat socket={socketState} />
       </div>
       <Footer />
