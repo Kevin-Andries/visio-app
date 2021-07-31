@@ -5,7 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 // Routers
 import roomRouter from "./routers/roomRouter";
-import PgQuery from "./db/pg";
+//import PgQuery from "./db/pg";
 
 const app = express();
 const server = http.createServer(app);
@@ -19,31 +19,32 @@ io.on("connection", (socket) => {
   //console.log(`Socket connection: ${socket.id}`);
 
   socket.on("join-room", async (roomId, cb) => {
-    const room = await PgQuery.getRoom(roomId);
+    //const room = await PgQuery.getRoom(roomId);
 
-    // Joining chat socket room
+    // User joins chat socket room
     socket.join(roomId);
-    console.log(socket.id + " has joined room " + roomId);
-    //socket.emit("room-info", room);
-    cb(room);
+    socket.to(roomId).emit("new-peer-joined", socket.id);
+    cb();
+  });
+
+  /**  WebRTC **/
+  socket.on("offer", (peerId, offer) => {
+    console.log("offer");
+    socket.to(peerId).emit("sdp-offer", socket.id, offer);
+  });
+
+  socket.on("answer", (peerId, answer) => {
+    console.log("answer");
+    socket.to(peerId).emit("sdp-answer", socket.id, answer);
+  });
+
+  socket.on("ice-candidate", (peerId, ice) => {
+    socket.to(peerId).emit("new-ice-candidate", socket.id, ice);
   });
 
   // Handle chat messages
   socket.on("msg", (roomId, author, msgText) => {
     socket.to(roomId).emit("msg", { author, msgText });
-  });
-
-  /**  WebRTC **/
-  socket.on("offer", (roomId, offer) => {
-    socket.to(roomId).emit("sdp-offer", offer);
-  });
-
-  socket.on("answer", (roomId, answer) => {
-    socket.to(roomId).emit("sdp-answer", answer);
-  });
-
-  socket.on("ice", (roomId, ice) => {
-    socket.to(roomId).emit("ice-transfer", ice);
   });
 
   socket.on("disconnect", () => {

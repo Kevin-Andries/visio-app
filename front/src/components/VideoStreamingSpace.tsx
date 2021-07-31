@@ -1,21 +1,22 @@
 import { useEffect } from "react";
 import { useRef } from "react";
+import { v4 as uuid } from "uuid";
+// Components
+import RemoteVideo from "./RemoteVideo";
+// Misc
+import { IPeer } from "../views/Room";
 
 interface IProps {
   localStream: MediaStream | null;
-  remoteStream: MediaStream | null;
+  remotePeers: IPeer[];
 }
 
-const VideoStreamingSpace = ({ localStream, remoteStream }: IProps) => {
+const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = localStream;
-    }
-    if (remoteVideoRef.current) {
-      remoteVideoRef.current.srcObject = remoteStream;
     }
   });
 
@@ -23,7 +24,9 @@ const VideoStreamingSpace = ({ localStream, remoteStream }: IProps) => {
     <div className="rounded-xl ml-5 text-center flex justify-center items-center bg-gray-300 h-full w-full">
       Videos will be displayed here.
       <video autoPlay ref={localVideoRef} style={{ height: "100px", width: "100px", zIndex: 999 }}></video>
-      <video autoPlay ref={remoteVideoRef} style={{ height: "100px", width: "100px", zIndex: 999 }}></video>
+      {remotePeers.map((peer: IPeer) => (
+        <RemoteVideo key={uuid()} remoteStream={peer.stream} />
+      ))}
     </div>
   );
 };
