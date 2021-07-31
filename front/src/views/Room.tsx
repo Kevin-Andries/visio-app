@@ -41,7 +41,7 @@ const Room = () => {
   // When we join a room, we connect to socket
   useEffect(() => {
     if (state.username) {
-      setSocket(io("http://localhost:3001"));
+      setSocket(io("http://kevinandries.tech"));
     }
   }, [state.username]);
 
