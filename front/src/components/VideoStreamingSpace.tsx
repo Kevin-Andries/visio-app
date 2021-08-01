@@ -26,9 +26,11 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
         <video autoPlay ref={localVideoRef}></video>
       </div>
       <div className="remote-videos-box">
-        {remotePeers.map((peer: IPeer) => (
-          <RemoteVideo key={uuid()} remoteStream={peer.stream} />
-        ))}
+        {remotePeers
+          .filter((peer: IPeer) => peer.stream.getTracks().length > 0)
+          .map((peer: IPeer) => (
+            <RemoteVideo key={uuid()} remoteStream={peer.stream} />
+          ))}
       </div>
     </div>
   );

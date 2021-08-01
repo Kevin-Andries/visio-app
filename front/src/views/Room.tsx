@@ -33,7 +33,7 @@ export interface IPeer {
 const Room = () => {
   const { state, dispatch } = useContext<any>(ContextState);
   const history = useHistory();
-  const [socket, setSocket] = useState<any>();
+  const [socket, setSocket] = useState<any>(null);
   const [roomId] = useState(history.location.pathname.substring(1));
   const pcRef = useRef<IPeer[]>([]);
   const socketInitializedRef = useRef(false);
@@ -42,10 +42,10 @@ const Room = () => {
 
   // When we join a room, we connect to socket
   useEffect(() => {
-    if (state.username) {
-      setSocket(io("https://kevinandries.tech"));
+    if (state.username && !socket && !state.loadingMedia) {
+      setSocket(io("http://localhost:3001"));
     }
-  }, [state.username]);
+  }, [state.username, state.loadingMedia, socket]);
 
   useEffect(() => {
     // Creates new RTC co when a client joins, and sends SDP to him
@@ -69,6 +69,7 @@ const Room = () => {
       };
 
       // Give its tracks to remote peer
+      // BUG HERE, state.media is null
       if (state.media) {
         state.media.getTracks().forEach((track: MediaStreamTrack) => {
           console.log("sending my tracks");
@@ -93,10 +94,10 @@ const Room = () => {
 
       // Save new peer conenction in ref
       pcRef.current.push(newPeer);
-      setTimeout(() => setR((prev) => !prev), 1000);
+      setTimeout(() => setR((prev) => !prev), 2000);
     };
 
-    if (state.username && socket && !socketInitializedRef.current) {
+    if (state.username && !state.loadingMedia && socket && !socketInitializedRef.current) {
       socket.on("connect", () => {
         console.log("Connected to socket " + socket.id);
 
@@ -133,7 +134,7 @@ const Room = () => {
     }
 
     // Cleaning function, when component unmounts, we close socket connection
-  }, [socket, dispatch, roomId, state.media, state.username]);
+  }, [socket, dispatch, roomId, state.media, state.username, state.loadingMedia]);
 
   return (
     <div className="h-screen flex flex-col justify-between ">
