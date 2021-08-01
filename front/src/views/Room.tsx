@@ -36,6 +36,7 @@ const Room = () => {
   const [socket, setSocket] = useState<any>();
   const [roomId] = useState(history.location.pathname.substring(1));
   const pcRef = useRef<IPeer[]>([]);
+  const socketInitializedRef = useRef(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [r, setR] = useState(false);
 
@@ -92,10 +93,10 @@ const Room = () => {
 
       // Save new peer conenction in ref
       pcRef.current.push(newPeer);
-      setR((prev) => !prev);
+      setTimeout(() => setR((prev) => !prev), 1000);
     };
 
-    if (state.username && socket) {
+    if (state.username && socket && !socketInitializedRef.current) {
       socket.on("connect", () => {
         console.log("Connected to socket " + socket.id);
 
@@ -127,6 +128,8 @@ const Room = () => {
           });
         });
       });
+
+      socketInitializedRef.current = true;
     }
 
     // Cleaning function, when component unmounts, we close socket connection
