@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { HashRouter as Router } from "react-router-dom";
 import App from "./App";
 
 // Context provider for global state
@@ -9,9 +10,11 @@ import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <ContextProvider>
-      <App />
-    </ContextProvider>
+    <Router>
+      <ContextProvider>
+        <App />
+      </ContextProvider>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );

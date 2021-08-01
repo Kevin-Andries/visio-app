@@ -1,37 +1,51 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useContext } from "react";
+import { Switch, Route } from "react-router-dom";
 // Components
-
-import Header from "./components/Header";
+import { setLoadingMediaAction, setMediaAction, setUserNameAction } from "./state/actions";
 import { ContextState } from "./state/Provider";
+// Views
+import Home from "./views/Home";
+import Room from "./views/Room";
+import Contact from "./views/Contact";
 
 function App() {
-  const [media, setMedia] = useState<MediaStream>();
-  const { state, dispatch } = useContext<any>(ContextState);
+  const { /* state, */ dispatch } = useContext<any>(ContextState);
 
   // We request user's permission to use microphone and webcam on start
+  // and check if there is a username in localStorage
   useEffect(() => {
+    dispatch(setUserNameAction(localStorage.getItem("username") || ""));
+
     (async () => {
       try {
         const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        setMedia(localStream);
+        dispatch(setMediaAction(localStream));
       } catch (e) {
         console.error("No microphone/webcam found");
+      } finally {
+        dispatch(setLoadingMediaAction(false));
       }
     })();
-  }, []);
+  }, [dispatch]);
 
   // log media object in console once it's set
-  useEffect(() => console.log("Media object: ", media), [media]);
+  //useEffect(() => console.log("State: ", state), [state]);
 
   return (
     <>
-      <Header />
-      <div style={{ height: "70vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-        <button className="text-white bg-blue-600 font-light text-2xl rounded-lg p-2 px-8 shadow-xl" style={{ marginBottom: "10px" }}>
-          Create a room
-        </button>
-        <button className="text-blue-600 border-2 border-blue-600 rounded-lg p-2 px-4 shadow-xl mt-2">Join a room</button>
-      </div>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+
+        <Route exact path="/contact">
+          <Contact />
+        </Route>
+
+        <Route path="/:roomId">
+          <Room />
+        </Route>
+      </Switch>
     </>
   );
 }

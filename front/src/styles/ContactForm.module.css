@@ -1,0 +1,9 @@
+input[name="firstName"],
+input[name="lastName"],
+input[name="email"],
+input[name="message"],
+input[name="userName"] {
+  border-bottom: 1px solid grey;
+  padding: 2px 0px;
+  outline: none;
+}
