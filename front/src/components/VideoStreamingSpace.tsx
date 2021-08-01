@@ -21,12 +21,15 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
   });
 
   return (
-    <div className="rounded-xl ml-5 text-center flex justify-center items-center bg-gray-300 h-full w-full">
-      Videos will be displayed here.
-      <video autoPlay ref={localVideoRef} style={{ height: "100px", width: "100px", zIndex: 999 }}></video>
-      {remotePeers.map((peer: IPeer) => (
-        <RemoteVideo key={uuid()} remoteStream={peer.stream} />
-      ))}
+    <div className="rounded-xl ml-5 p-5 bg-gray-300 h-full w-full flex flex-col items-center">
+      <div className="local-video-box mb-3">
+        <video autoPlay ref={localVideoRef}></video>
+      </div>
+      <div className="remote-videos-box">
+        {remotePeers.map((peer: IPeer) => (
+          <RemoteVideo key={uuid()} remoteStream={peer.stream} />
+        ))}
+      </div>
     </div>
   );
 };
