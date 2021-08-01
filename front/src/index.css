@@ -7,3 +7,13 @@
   outline: none;
   border-bottom: 1px solid grey;
 } */
+
+.local-video-box {
+  height: 25%;
+}
+
+video {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}

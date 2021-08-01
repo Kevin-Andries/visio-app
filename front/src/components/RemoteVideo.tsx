@@ -13,7 +13,7 @@ const RemoteVideo = ({ remoteStream }: IProps) => {
     }
   });
 
-  return <video autoPlay ref={videoRef} style={{ height: "100px", width: "100px", zIndex: 999 }}></video>;
+  return <video autoPlay ref={videoRef}></video>;
 };
 
 export default RemoteVideo;

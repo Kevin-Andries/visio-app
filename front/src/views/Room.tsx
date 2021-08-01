@@ -36,12 +36,13 @@ const Room = () => {
   const [socket, setSocket] = useState<any>();
   const [roomId] = useState(history.location.pathname.substring(1));
   const pcRef = useRef<IPeer[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [r, setR] = useState(false);
 
   // When we join a room, we connect to socket
   useEffect(() => {
     if (state.username) {
-      setSocket(io("http://localhost:3001"));
+      setSocket(io("https://kevinandries.tech"));
     }
   }, [state.username]);
 
