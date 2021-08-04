@@ -10,6 +10,7 @@ import SetUsernameModal from "../components/SetUsernameModal";
 // Misc
 import { ContextState } from "../state/Provider";
 import { joinRoomAction } from "../state/actions";
+import { useCallback } from "react";
 
 const RTCConfig = {
   iceServers: [
@@ -30,26 +31,33 @@ export interface IPeer {
   connection: RTCPeerConnection;
 }
 
+// useReducer is great to avoid state dependency when we change the state.
+// But if we need to read it not to change it, it is useless.
+
+// When does socket.on("connect") fire exactly ???
+
 const Room = () => {
   const { state, dispatch } = useContext<any>(ContextState);
   const history = useHistory();
   const [socket, setSocket] = useState<any>(null);
   const [roomId] = useState(history.location.pathname.substring(1));
+  const [pc, setPc] = useState<IPeer[]>([]);
   const pcRef = useRef<IPeer[]>([]);
-  const socketInitializedRef = useRef(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [r, setR] = useState(false);
+  //const socketInitializedRef = useRef(false);
 
-  // When we join a room, we connect to socket
-  useEffect(() => {
-    if (state.username && !socket && !state.loadingMedia) {
-      setSocket(io("http://localhost:3001"));
-    }
-  }, [state.username, state.loadingMedia, socket]);
+  /*************************************************************************************************************************/
+  /*************************************************************************************************************************/
 
   useEffect(() => {
-    // Creates new RTC co when a client joins, and sends SDP to him
-    const createRTCConnection = async (peerId: string, which: string, sdp?: RTCSessionDescription): Promise<void> => {
+    pcRef.current = pc;
+  });
+
+  /*************************************************************************************************************************/
+  /*************************************************************************************************************************/
+
+  // Creates new RTC co when a client joins, and sends SDP to him
+  const createRTCConnection = useCallback(
+    async (peerId: string, which: string, sdp?: RTCSessionDescription): Promise<void> => {
       const newPeer = { id: peerId, connection: new RTCPeerConnection(RTCConfig), stream: new MediaStream() };
 
       // Listen to ice candidate
@@ -69,10 +77,9 @@ const Room = () => {
       };
 
       // Give its tracks to remote peer
-      // BUG HERE, state.media is null
       if (state.media) {
         state.media.getTracks().forEach((track: MediaStreamTrack) => {
-          console.log("sending my tracks");
+          console.log("sending my tracks", track);
           newPeer.connection.addTrack(track, state.media);
         });
       }
@@ -92,12 +99,30 @@ const Room = () => {
         socket.emit("answer", peerId, answer);
       }
 
-      // Save new peer conenction in ref
-      pcRef.current.push(newPeer);
-      setTimeout(() => setR((prev) => !prev), 2000);
-    };
+      // Save new peer conenction and re-render
+      console.log("SETTING NEW PEER");
+      setPc((prev) => [...prev, newPeer]);
+    },
+    [socket, state.media]
+  );
 
-    if (state.username && !state.loadingMedia && socket && !socketInitializedRef.current) {
+  /*************************************************************************************************************************/
+  /*************************************************************************************************************************/
+
+  // When we join a room, we connect to socket
+  // Before, we need username and be sure media is ready in state
+  useEffect(() => {
+    if (state.username && !state.loadingMedia) {
+      setSocket(io("https://kevinandries.tech"));
+    }
+  }, [state.username, state.loadingMedia]);
+
+  /*************************************************************************************************************************/
+  /*************************************************************************************************************************/
+
+  useEffect(() => {
+    console.log("RUNNING HELL EFFECT");
+    if (socket) {
       socket.on("connect", () => {
         console.log("Connected to socket " + socket.id);
 
@@ -129,20 +154,22 @@ const Room = () => {
           });
         });
       });
-
-      socketInitializedRef.current = true;
+      //socketInitializedRef.current = true;
     }
 
-    // Cleaning function, when component unmounts, we close socket connection
-  }, [socket, dispatch, roomId, state.media, state.username, state.loadingMedia]);
+    if (socket) return () => socket.off();
+  }, [socket, createRTCConnection, dispatch, roomId]);
+
+  /*************************************************************************************************************************/
+  /*************************************************************************************************************************/
 
   return (
     <div className="h-screen flex flex-col justify-between ">
       <Header />
       <h2 className="text-center font-bold text-3xl">ROOM NAME</h2>
       {!state.username && <SetUsernameModal />}
-      <div className="flex" style={{ height: "90%" }}>
-        <VideoStreamingSpace localStream={state.media} remotePeers={pcRef.current} />
+      <div className="flex flex-col sm:flex-row" style={{ height: "90%" }}>
+        <VideoStreamingSpace localStream={state.media} remotePeers={pc} />
         <Chat socket={socket} />
       </div>
       <Footer />

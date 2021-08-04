@@ -41,8 +41,8 @@ const MessagesPanel = ({ messages, handleSubmitMsg }: IProps) => {
       </div>
 
       <form className="flex m-5 mt-2" onSubmit={handleSubmit}>
-        <input onChange={handleChange} value={msgText} type="text" className="border-2 rounded-lg mr-3 w-full p-2 outline-none" />
-        <button type="submit" className="p-3 rounded-lg bg-blue-600 text-white">
+        <input onChange={handleChange} value={msgText} type="text" className="border-2 rounded-lg sm:mr-3 w-full p-2 outline-none" />
+        <button type="submit" className="p-3 rounded-lg bg-blue-600 text-white hidden sm:block ">
           Send
         </button>
       </form>

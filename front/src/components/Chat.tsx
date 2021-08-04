@@ -33,7 +33,7 @@ const Chat = ({ socket }: IProps) => {
   };
 
   return (
-    <div className="h-full mx-5 w-1/3 rounded-xl border-2 flex flex-col justify-end relative overflow-y-scroll">
+    <div className="h-full mx-5 md:w-96 lg:w-1/4 rounded-xl border-2 flex flex-col justify-end relative overflow-y-scroll">
       <MessagesPanel messages={messages} handleSubmitMsg={handleSubmitMsg} />
     </div>
   );

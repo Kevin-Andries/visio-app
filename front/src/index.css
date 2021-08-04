@@ -7,17 +7,3 @@
   outline: none;
   border-bottom: 1px solid grey;
 } */
-
-.local-video-box {
-}
-
-.remote-videos-box {
-  display: flex;
-  gap: 2rem;
-}
-
-video {
-  height: 20rem;
-  width: 20rem;
-  object-fit: cover;
-}
