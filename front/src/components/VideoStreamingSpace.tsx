@@ -18,7 +18,13 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
 
   useEffect(() => {
     if (localVideoRef.current) {
-      localVideoRef.current.srcObject = localStream;
+      const tracks = localStream?.getTracks();
+      if (tracks) {
+        console.log("TRACKS", tracks);
+        const newMedia = new MediaStream();
+        newMedia.addTrack(tracks![1]);
+        localVideoRef.current.srcObject = newMedia;
+      }
     }
   });
 
