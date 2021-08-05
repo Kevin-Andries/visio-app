@@ -16,7 +16,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  //console.log(`Socket connection: ${socket.id}`);
+  console.log(`Socket connection: ${socket.id}`);
 
   socket.on("join-room", async (roomId, cb) => {
     //const room = await PgQuery.getRoom(roomId);
@@ -29,12 +29,10 @@ io.on("connection", (socket) => {
 
   /**  WebRTC **/
   socket.on("offer", (peerId, offer) => {
-    console.log("offer");
     socket.to(peerId).emit("sdp-offer", socket.id, offer);
   });
 
   socket.on("answer", (peerId, answer) => {
-    console.log("answer");
     socket.to(peerId).emit("sdp-answer", socket.id, answer);
   });
 

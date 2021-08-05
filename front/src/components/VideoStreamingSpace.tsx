@@ -34,7 +34,6 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
         {remotePeers
           /* .filter((peer: IPeer) => peer.stream.getTracks().length > 0) */
           .map((peer: IPeer, i: any, arr: any) => {
-            console.log("REMAINING ARRAY", arr);
             return <RemoteVideo key={uuid()} remoteStream={peer.stream} />;
           })}
       </div>

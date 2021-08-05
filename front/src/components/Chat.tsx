@@ -13,6 +13,7 @@ interface IProps {
 const Chat = ({ socket }: IProps) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const { state } = useContext<any>(ContextState);
+  console.log("CHAT SOCKET", socket);
 
   // Listening to chat messages
   useEffect(() => {

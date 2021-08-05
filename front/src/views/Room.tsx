@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useContext } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { useHistory } from "react-router-dom";
 // Components
 import Header from "../components/Header";
@@ -39,7 +39,8 @@ export interface IPeer {
 const Room = () => {
   const { state, dispatch } = useContext<any>(ContextState);
   const history = useHistory();
-  const [socket, setSocket] = useState<any>(null);
+  //const [socket, setSocket] = useState<any>(null);
+  const socketRef = useRef<Socket | undefined>();
   const [roomId] = useState(history.location.pathname.substring(1));
   const [pc, setPc] = useState<IPeer[]>([]);
   const pcRef = useRef<IPeer[]>([]);
@@ -64,7 +65,7 @@ const Room = () => {
       newPeer.connection.onicecandidate = (e) => {
         if (e.candidate) {
           console.log("emit ice candidate");
-          socket.emit("ice-candidate", peerId, e.candidate);
+          socketRef.current?.emit("ice-candidate", peerId, e.candidate);
         }
       };
 
@@ -89,21 +90,21 @@ const Room = () => {
         console.log("create offer");
         const offer = await newPeer.connection.createOffer(peerConfig);
         newPeer.connection.setLocalDescription(offer);
-        socket.emit("offer", peerId, offer);
+        socketRef.current?.emit("offer", peerId, offer);
       } else if (which === "answer" && sdp) {
         const sdpObj = new RTCSessionDescription(sdp);
         newPeer.connection.setRemoteDescription(sdpObj);
         const answer = await newPeer.connection.createAnswer(peerConfig);
         newPeer.connection.setLocalDescription(answer);
         console.log("create answer");
-        socket.emit("answer", peerId, answer);
+        socketRef.current?.emit("answer", peerId, answer);
       }
 
       // Save new peer conenction and re-render
       console.log("SETTING NEW PEER");
       setPc((prev) => [...prev, newPeer]);
     },
-    [socket, state.media]
+    [state.media]
   );
 
   /*************************************************************************************************************************/
@@ -113,52 +114,46 @@ const Room = () => {
   // Before, we need username and be sure media is ready in state
   useEffect(() => {
     if (state.username && !state.loadingMedia) {
-      setSocket(io("https://kevinandries.tech"));
-    }
-  }, [state.username, state.loadingMedia]);
+      //setSocket(io("http://localhost:3001"));
+      socketRef.current = io("https://kevinandries.tech");
+      const socket = socketRef.current;
 
-  /*************************************************************************************************************************/
-  /*************************************************************************************************************************/
-
-  useEffect(() => {
-    console.log("RUNNING HELL EFFECT");
-    if (socket) {
       socket.on("connect", () => {
         console.log("Connected to socket " + socket.id);
+      });
 
-        socket.emit("join-room", roomId, () => {
-          dispatch(joinRoomAction(roomId));
+      socket.emit("join-room", roomId, () => {
+        dispatch(joinRoomAction(roomId));
 
-          // When an SDP is received, we create answer
-          socket.on("sdp-offer", async (peerId: any, sdp: any) => {
-            console.log("sdp-offer");
-            createRTCConnection(peerId, "answer", sdp);
-          });
+        // When an SDP is received, we create answer
+        socket.on("sdp-offer", async (peerId: any, sdp: any) => {
+          console.log("sdp-offer");
+          createRTCConnection(peerId, "answer", sdp);
+        });
 
-          socket.on("sdp-answer", (peerId: any, sdp: any) => {
-            console.log("sdp-answer");
-            const remotePeer = pcRef.current.find((peer: IPeer) => peer.id === peerId);
-            remotePeer?.connection.setRemoteDescription(new RTCSessionDescription(sdp));
-          });
+        socket.on("sdp-answer", (peerId: any, sdp: any) => {
+          console.log("sdp-answer");
+          const remotePeer = pcRef.current.find((peer: IPeer) => peer.id === peerId);
+          remotePeer?.connection.setRemoteDescription(new RTCSessionDescription(sdp));
+        });
 
-          // When a client joined, we create an offer for him
-          socket.on("new-peer-joined", async (peerId: any) => {
-            console.log("new peer joined");
-            createRTCConnection(peerId, "creates");
-          });
+        // When a client joined, we create an offer for him
+        socket.on("new-peer-joined", async (peerId: any) => {
+          console.log("new peer joined");
+          createRTCConnection(peerId, "creates");
+        });
 
-          socket.on("new-ice-candidate", (peerId: any, candidate: any) => {
-            console.log("received ice candidate");
-            const remotePeer = pcRef.current.find((peer: IPeer) => peer.id === peerId);
-            remotePeer?.connection.addIceCandidate(new RTCIceCandidate(candidate));
-          });
+        socket.on("new-ice-candidate", (peerId: any, candidate: any) => {
+          console.log("received ice candidate");
+          const remotePeer = pcRef.current.find((peer: IPeer) => peer.id === peerId);
+          remotePeer?.connection.addIceCandidate(new RTCIceCandidate(candidate));
         });
       });
-      //socketInitializedRef.current = true;
     }
+  }, [state.username, state.loadingMedia, createRTCConnection, roomId, dispatch]);
 
-    if (socket) return () => socket.off();
-  }, [socket, createRTCConnection, dispatch, roomId]);
+  /*************************************************************************************************************************/
+  /*************************************************************************************************************************/
 
   /*************************************************************************************************************************/
   /*************************************************************************************************************************/
@@ -170,7 +165,7 @@ const Room = () => {
       {!state.username && <SetUsernameModal />}
       <div className="flex flex-col sm:flex-row" style={{ height: "90%" }}>
         <VideoStreamingSpace localStream={state.media} remotePeers={pc} />
-        <Chat socket={socket} />
+        <Chat socket={socketRef.current!} />
       </div>
       <Footer />
     </div>
