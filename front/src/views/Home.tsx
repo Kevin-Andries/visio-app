@@ -26,7 +26,7 @@ const Home = () => {
   };
 
   const handleCreateRoom = async () => {
-    const { roomId } = await fetch("https://kevinandries.tech/room").then((res) => res.json());
+    const { roomId } = await fetch(`${process.env.REACT_APP_API_URL}/room`).then((res) => res.json());
     dispatch(createNewRoomAction(roomId));
     history.push(`/${roomId}`);
   };

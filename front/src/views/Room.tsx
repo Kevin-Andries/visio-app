@@ -115,7 +115,7 @@ const Room = () => {
   useEffect(() => {
     if (state.username && !state.loadingMedia) {
       //setSocket(io("http://localhost:3001"));
-      socketRef.current = io("https://kevinandries.tech");
+      socketRef.current = io(`${process.env.REACT_APP_API_URL}`);
       const socket = socketRef.current;
 
       socket.on("connect", () => {
