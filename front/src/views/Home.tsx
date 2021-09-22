@@ -47,10 +47,8 @@ const Home = () => {
       return setRoomExists(false);
     }
 
-    if (roomNumber === state.activeRooms) {
-      setRoomExists(true);
-      history.push(`/${roomNumber}`);
-    }
+    setRoomExists(true);
+    history.push(`/${roomNumber}`);
   };
 
   const getUsername = () => {

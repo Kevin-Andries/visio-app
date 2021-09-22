@@ -148,7 +148,17 @@ const Room = () => {
           const remotePeer = pcRef.current.find((peer: IPeer) => peer.id === peerId);
           remotePeer?.connection.addIceCandidate(new RTCIceCandidate(candidate));
         });
+
+        socket.on("user-left", (peerId: string) => {
+          console.error("USER LEFT");
+          const remotePeerIndex = pcRef.current.findIndex((peer: IPeer) => peer.id === peerId);
+          console.log(remotePeerIndex);
+        });
       });
+
+      return () => {
+        socket.close();
+      };
     }
   }, [state.username, state.loadingMedia, createRTCConnection, roomId, dispatch]);
 
