@@ -34,7 +34,7 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
       parentHeight={remoteBoxRef.current?.clientHeight}
       className="rounded-xl ml-5 p-5 h-full w-full flex flex-col items-center border-2">
       <div className="local-video-box mb-3">
-        <video autoPlay ref={localVideoRef}></video>
+        <video autoPlay playsInline ref={localVideoRef}></video>
       </div>
       <div className="remote-videos-box" ref={remoteBoxRef}>
         {remotePeers

@@ -45,10 +45,10 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("msg", { author, msgText });
   });
 
-  socket.on("disconnect", (roomId) => {
+  /* socket.on("disconnect", (roomId) => {
     console.log(`Closed socket: ${socket.id}`);
     socket.to(roomId).emit("user-left", socket.id);
-  });
+  }); */
 });
 
 // Middlewares

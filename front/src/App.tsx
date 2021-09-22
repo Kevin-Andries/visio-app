@@ -14,6 +14,8 @@ function App() {
   // We request user's permission to use microphone and webcam on start
   // and check if there is a username in localStorage
   useEffect(() => {
+    // Show API URL being used
+    console.log("URL API: " + process.env.REACT_APP_API_URL);
     dispatch(setUserNameAction(localStorage.getItem("username") || ""));
 
     (async () => {
