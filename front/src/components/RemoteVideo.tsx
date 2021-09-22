@@ -10,6 +10,7 @@ const RemoteVideo = ({ remoteStream }: IProps) => {
   useEffect(() => {
     if (videoRef && videoRef.current) {
       videoRef.current.srcObject = remoteStream;
+      console.log("Remote stream: ", remoteStream);
     }
   });
 
