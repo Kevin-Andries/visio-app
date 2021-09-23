@@ -46,6 +46,11 @@ const Room = () => {
   const pcRef = useRef<IPeer[]>([]);
   //const socketInitializedRef = useRef(false);
 
+  const removeRemotePeer = (peerId: string) => {
+    pcRef.current = pcRef.current.filter((peer: IPeer) => peer.id !== peerId);
+    setPc(pcRef.current);
+  };
+
   /*************************************************************************************************************************/
   /*************************************************************************************************************************/
 
@@ -56,6 +61,16 @@ const Room = () => {
   /*************************************************************************************************************************/
   /*************************************************************************************************************************/
 
+  useEffect(() => {
+    return () => {
+      // Close RTC connections here
+      // But why aren't objects destroyed ????????
+      // Or they are but connetions are still on in the browser ???
+      console.log("CLOSING ALL CONNECTIONS");
+      pcRef.current.forEach((pc) => pc.connection.close());
+    };
+  }, []);
+
   // Creates new RTC co when a client joins, and sends SDP to him
   const createRTCConnection = useCallback(
     async (peerId: string, which: string, sdp?: RTCSessionDescription): Promise<void> => {
@@ -65,6 +80,7 @@ const Room = () => {
       newPeer.connection.onicecandidate = (e) => {
         if (e.candidate) {
           console.log("emit ice candidate");
+
           socketRef.current?.emit("ice-candidate", peerId, e.candidate);
         }
       };
@@ -72,9 +88,18 @@ const Room = () => {
       // Listen to tracks
       newPeer.connection.ontrack = (e) => {
         console.log("RECEIVED TRACK", e);
+
         e.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
           newPeer.stream.addTrack(track);
         });
+      };
+
+      newPeer.connection.onconnectionstatechange = () => {
+        const connectionState = newPeer.connection.connectionState;
+        if (connectionState === "closed" || connectionState === "disconnected") {
+          console.log("A USER LEFT THE ROOM");
+          removeRemotePeer(newPeer.id);
+        }
       };
 
       // Give its tracks to remote peer
