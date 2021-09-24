@@ -89,16 +89,22 @@ const Room = () => {
       newPeer.connection.ontrack = (e) => {
         console.log("RECEIVED TRACK", e);
 
-        e.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
-          newPeer.stream.addTrack(track);
-        });
+        setTimeout(() => {
+          console.log("SETTINGS REMOTE TRACKS");
+          e.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
+            newPeer.stream.addTrack(track);
+          });
+        }, 2000);
       };
 
       newPeer.connection.onconnectionstatechange = () => {
         const connectionState = newPeer.connection.connectionState;
+
         if (connectionState === "closed" || connectionState === "disconnected") {
           console.log("A USER LEFT THE ROOM");
           removeRemotePeer(newPeer.id);
+        } else if (connectionState === "connected") {
+          console.log("CONNECTED TO PEER");
         }
       };
 
