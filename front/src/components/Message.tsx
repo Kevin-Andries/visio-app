@@ -1,10 +1,11 @@
 import { IMessage } from "../utils/interfaces";
 
 interface IProps {
+  msg: IMessage;
   showAuthor: boolean;
 }
 
-const Message = ({ author, showAuthor, msgText }: IMessage & IProps) => {
+const Message = ({ msg: { author, msgText }, showAuthor }: IProps) => {
   const date = new Date();
   return (
     <div className={showAuthor ? "mt-3" : ""}>

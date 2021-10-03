@@ -90,7 +90,8 @@ const Room = () => {
         console.log("RECEIVED TRACK", e);
 
         setTimeout(() => {
-          console.log("SETTINGS REMOTE TRACKS");
+          console.log("SETTINGS REMOTE TRACKS", e.streams[0].getTracks());
+
           e.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
             newPeer.stream.addTrack(track);
           });

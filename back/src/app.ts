@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
 
   // Handle chat messages
   socket.on("msg", (roomId, author, msgText) => {
-    socket.to(roomId).emit("msg", { author, msgText });
+    socket.to(roomId).emit("msg", { author, authorId: socket.id, msgText });
   });
 
   /* socket.on("disconnect", (roomId) => {

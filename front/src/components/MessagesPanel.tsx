@@ -32,11 +32,11 @@ const MessagesPanel = ({ messages, handleSubmitMsg }: IProps) => {
         {messages.map((message: IMessage, i: number, array: any) => {
           let showAuthor = true;
 
-          if (array[i - 1] && array[i - 1].author === message.author) {
+          if (array[i - 1] && array[i - 1].authorId === message.authorId) {
             showAuthor = false;
           }
 
-          return <Message key={uuid()} author={message.author} msgText={message.msgText} showAuthor={showAuthor} />;
+          return <Message key={uuid()} msg={message} showAuthor={showAuthor} />;
         })}
       </div>
 

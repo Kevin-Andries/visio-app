@@ -13,20 +13,19 @@ interface IProps {
 const Chat = ({ socket }: IProps) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const { state } = useContext<any>(ContextState);
-  console.log("CHAT SOCKET", socket);
 
   // Listening to chat messages
   useEffect(() => {
     if (socket) {
-      socket.on("msg", ({ author, msgText }) => {
-        addMsg({ author, msgText });
+      socket.on("msg", ({ author, authorId, msgText }) => {
+        addMsg({ author, authorId, msgText });
       });
     }
   }, [socket]);
 
   const handleSubmitMsg = (msgText: string) => {
     socket.emit("msg", state.roomId, state.username, msgText);
-    addMsg({ author: state.username, msgText });
+    addMsg({ author: state.username, authorId: socket.id, msgText });
   };
 
   const addMsg = (msg: IMessage) => {
