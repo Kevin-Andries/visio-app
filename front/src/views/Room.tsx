@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { useHistory } from "react-router-dom";
+import jwt from "jsonwebtoken";
 // Components
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -10,21 +11,8 @@ import SetUsernameModal from "../components/SetUsernameModal";
 // Misc
 import { ContextState } from "../state/Provider";
 import { joinRoomAction } from "../state/actions";
-import { useCallback } from "react";
+import { RTCConfig, peerConfig } from "../utils/rtc";
 
-const RTCConfig = {
-  iceServers: [
-    {
-      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
-    },
-  ],
-  iceCandidatePoolSize: 10,
-};
-
-const peerConfig = {
-  offerToReceiveAudio: true,
-  offerToReceiveVideo: true,
-};
 export interface IPeer {
   id: string;
   stream: MediaStream;
@@ -39,6 +27,7 @@ export interface IPeer {
 const Room = () => {
   const { state, dispatch } = useContext<any>(ContextState);
   const history = useHistory();
+  const [loading, setLoading] = useState(true);
   //const [socket, setSocket] = useState<any>(null);
   const socketRef = useRef<Socket | undefined>();
   const [roomId] = useState(history.location.pathname.substring(1));
@@ -50,6 +39,29 @@ const Room = () => {
     pcRef.current = pcRef.current.filter((peer: IPeer) => peer.id !== peerId);
     setPc(pcRef.current);
   };
+
+  /*************************************************************************************************************************/
+  /*************************************************************************************************************************/
+  useEffect(() => {
+    // check if room exists
+    (async () => {
+      let res: any = await fetch(`${process.env.REACT_APP_API_URL}/room/${roomId}`);
+
+      if (res.status === 404) {
+        console.log("%c THIS ROOM DOES NOT EXIST", "color: lightgreen; background: red; font-size: 20px");
+        history.push("/");
+      } else {
+        //console.log("Data from token:", jwt.decode(await res.json()));
+        res = await res.json();
+        const data = jwt.decode(res.token);
+        console.log("roomId:", roomId);
+        dispatch(joinRoomAction({ roomId, token: res.token }));
+        console.log("Here", res.token, data);
+        console.log("%c WELCOME", "color: yellow; background: blue; font-size: 20px");
+        setLoading(false);
+      }
+    })();
+  }, [roomId, history, dispatch]);
 
   /*************************************************************************************************************************/
   /*************************************************************************************************************************/
@@ -89,13 +101,13 @@ const Room = () => {
       newPeer.connection.ontrack = (e) => {
         console.log("RECEIVED TRACK", e);
 
-        setTimeout(() => {
-          console.log("SETTINGS REMOTE TRACKS", e.streams[0].getTracks());
+        /* setTimeout(() => { */
+        console.log("SETTINGS REMOTE TRACKS", e.streams[0].getTracks());
 
-          e.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
-            newPeer.stream.addTrack(track);
-          });
-        }, 2000);
+        e.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
+          newPeer.stream.addTrack(track);
+        });
+        /* }, 2000); */
       };
 
       newPeer.connection.onconnectionstatechange = () => {
@@ -155,8 +167,6 @@ const Room = () => {
       });
 
       socket.emit("join-room", roomId, () => {
-        dispatch(joinRoomAction(roomId));
-
         // When an SDP is received, we create answer
         socket.on("sdp-offer", async (peerId: any, sdp: any) => {
           console.log("sdp-offer");
@@ -200,7 +210,9 @@ const Room = () => {
   /*************************************************************************************************************************/
   /*************************************************************************************************************************/
 
-  return (
+  return loading ? (
+    <p>Loading</p>
+  ) : (
     <div className="h-screen flex flex-col justify-between ">
       <Header />
       <h2 className="text-center font-bold text-3xl">ROOM NAME</h2>

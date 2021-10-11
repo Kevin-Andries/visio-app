@@ -3,19 +3,17 @@ import { useReducer, createContext } from "react";
 export interface IState {
   media: MediaStream | null;
   loadingMedia: boolean;
-  activeRooms: string[];
   roomId: string;
-  hasCreatedRoom: boolean;
   username: string;
+  token: string;
 }
 
 const initialState: IState = {
   media: null,
   loadingMedia: true,
-  activeRooms: [],
   roomId: "",
-  hasCreatedRoom: false,
   username: "",
+  token: "",
 };
 
 interface IPayload {
@@ -38,14 +36,13 @@ const reducer = (state: IState, action: IPayload) => {
     case "CREATE_NEW_ROOM":
       return {
         ...state,
-        activeRooms: [...state.activeRooms, action.payload],
         roomId: action.payload,
-        hasCreatedRoom: true,
       };
     case "JOIN_ROOM":
       return {
         ...state,
-        roomId: action.payload,
+        roomId: action.payload.roomId,
+        token: action.payload.token,
       };
     case "SET_USER_NAME":
       localStorage.setItem("username", action.payload);
@@ -53,6 +50,8 @@ const reducer = (state: IState, action: IPayload) => {
         ...state,
         username: action.payload,
       };
+    case "RESET":
+      return initialState;
     default:
       console.error("Action not found in reducer");
       return state;

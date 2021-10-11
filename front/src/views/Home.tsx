@@ -1,20 +1,23 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 // Components
 import { ContextState } from "../state/Provider";
-import { createNewRoomAction, setUserNameAction } from "../state/actions";
+import { createNewRoomAction, resetAction, setUserNameAction } from "../state/actions";
 import Header from "../components/Header";
 import JoinRoomModal from "../components/JoinRoomModal";
+//import EditUsername from "../components/EditUsername";
 import Footer from "../components/Footer";
+import EditUsername from "../components/EditUsername";
 
 const Home = () => {
   const { state, dispatch } = useContext<any>(ContextState);
-  const [isJoiningRoom, setIsJoiningRoom] = useState(false);
-  const [roomExists, setRoomExists] = useState(true);
-  const [roomNumber, setRoomNumber] = useState(null);
-  const [editingUsername, setEditingUsername] = useState(false);
-  const [username, setUsername] = useState("");
+  const [joinRoomModal, setToggleJoinRoomModal] = useState(false);
+  const [editUsername, setEditUsername] = useState(false);
   const history = useHistory();
+
+  useEffect(() => {
+    dispatch(resetAction());
+  }, [dispatch]);
 
   const showError = () => {
     return (
@@ -31,68 +34,39 @@ const Home = () => {
     history.push(`/${roomId}`);
   };
 
-  const toggleJoinRoom = () => {
-    setIsJoiningRoom((prev) => !prev);
-    setRoomExists(true);
-  };
-
-  const updateJoinRoomInputValue = (e: any) => {
-    setRoomNumber(e.target.value);
-  };
-
-  const handleJoinRoomSubmit = (e: any) => {
-    e.preventDefault();
-
-    if (!roomNumber) {
-      return setRoomExists(false);
-    }
-
-    setRoomExists(true);
-    history.push(`/${roomNumber}`);
-  };
-
-  const getUsername = () => {
-    return localStorage.getItem("username");
+  // Edit username functions
+  const toggleSetUsername = () => {
+    setEditUsername((prev) => !prev);
   };
 
   const handleEditUsername = () => {
-    setEditingUsername((prevState) => !prevState);
+    setEditUsername((prev) => !prev);
   };
 
-  const handleEditUsernameChange = (e: any) => {
-    setUsername(e.target.value);
-  };
-
-  const handleChangeUsername = (e: any) => {
-    e.preventDefault();
+  const handleSetUsername = (username: string) => {
     dispatch(setUserNameAction(username));
-    setEditingUsername(false);
+    setEditUsername(false);
+  };
+
+  // Join room functions
+  const toggleJoinRoomModal = () => {
+    setToggleJoinRoomModal((prev) => !prev);
   };
 
   return (
     <div className="h-screen flex flex-col justify-between">
       <Header />
-      <JoinRoomModal
-        roomExists={roomExists}
-        updateJoinRoomInputValue={updateJoinRoomInputValue}
-        show={isJoiningRoom}
-        toggle={toggleJoinRoom}
-        handleJoinRoomSubmit={handleJoinRoomSubmit}
-      />
+      {joinRoomModal && <JoinRoomModal toggleJoinRoomModal={toggleJoinRoomModal} />}
+
       {showError()}
       <div className="flex flex-col justify-center items-center">
         {state.username && (
           <div className="mb-3">
-            {editingUsername ? (
-              <form onSubmit={handleChangeUsername}>
-                <input type="text" className="border-2 -m-1" onChange={handleEditUsernameChange} autoFocus />
-                <span onClick={handleEditUsername} className="cursor-pointer ml-3">
-                  &#x274C;
-                </span>
-              </form>
+            {editUsername ? (
+              <EditUsername handleSetUsername={handleSetUsername} toggleSetUsername={toggleSetUsername} />
             ) : (
               <p onClick={handleEditUsername} className="cursor-pointer">
-                Your username: <span className="font-bold">{getUsername()}</span>{" "}
+                Your username: <span className="font-bold">{state.username}</span>
               </p>
             )}
           </div>
@@ -100,7 +74,9 @@ const Home = () => {
         <button onClick={handleCreateRoom} className="text-white bg-blue-600 font-light text-2xl rounded-lg p-2 px-8 shadow-xl">
           Create a room
         </button>
-        <button onClick={toggleJoinRoom} className="text-blue-600 border-2 border-blue-600 rounded-lg p-2 px-4 shadow-xl mt-5">
+        <button
+          onClick={() => setToggleJoinRoomModal((prev) => !prev)}
+          className="text-blue-600 border-2 border-blue-600 rounded-lg p-2 px-4 shadow-xl mt-5">
           Join a room
         </button>
       </div>

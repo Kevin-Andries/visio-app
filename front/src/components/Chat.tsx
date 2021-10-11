@@ -18,13 +18,14 @@ const Chat = ({ socket }: IProps) => {
   useEffect(() => {
     if (socket) {
       socket.on("msg", ({ author, authorId, msgText }) => {
+        console.log("CHAT MSG RECEIVED");
         addMsg({ author, authorId, msgText });
       });
     }
   }, [socket]);
 
   const handleSubmitMsg = (msgText: string) => {
-    socket.emit("msg", state.roomId, state.username, msgText);
+    socket.emit("msg", state.token, state.username, msgText);
     addMsg({ author: state.username, authorId: socket.id, msgText });
   };
 

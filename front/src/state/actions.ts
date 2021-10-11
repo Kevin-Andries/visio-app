@@ -1,3 +1,8 @@
+interface IJoinRoomPayload {
+  roomId: string;
+  token: string;
+}
+
 export const setMediaAction = (media: MediaStream) => ({
   type: "SET_MEDIA",
   payload: media,
@@ -18,7 +23,11 @@ export const setUserNameAction = (username: string) => ({
   payload: username,
 });
 
-export const joinRoomAction = (roomId: string) => ({
+export const joinRoomAction = (payload: IJoinRoomPayload) => ({
   type: "JOIN_ROOM",
-  payload: roomId,
+  payload,
+});
+
+export const resetAction = () => ({
+  type: "RESET",
 });

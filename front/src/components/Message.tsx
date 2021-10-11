@@ -1,17 +1,9 @@
 import { IMessage } from "../utils/interfaces";
+import { formatTime } from "../utils/formatTime";
 
 interface IProps {
   msg: IMessage;
   showAuthor: boolean;
-}
-
-function formatTime() {
-  const date = new Date();
-
-  const hours = date.getHours();
-  const minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-
-  return `${hours}h${minutes}`;
 }
 
 const Message = ({ msg: { author, msgText }, showAuthor }: IProps) => {
