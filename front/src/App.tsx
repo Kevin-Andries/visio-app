@@ -8,6 +8,9 @@ import Home from "./views/Home";
 import Room from "./views/Room";
 import Contact from "./views/Contact";
 
+// TODO: CSS
+// TODO: proper errors handling
+
 function App() {
   const { /* state, */ dispatch } = useContext<any>(ContextState);
 

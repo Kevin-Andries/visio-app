@@ -10,6 +10,7 @@ import { IPeer } from "../views/Room";
 interface IProps {
   localStream: MediaStream | null;
   remotePeers: IPeer[];
+  update: Boolean;
 }
 
 const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
@@ -28,6 +29,10 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
     }
   });
 
+  console.log("%c BEFORE MAP", "color: lightgreen");
+  console.log(remotePeers);
+  console.log("%c -------------------", "color: lightgreen");
+
   return (
     <StyledVideoSpace
       nb={remotePeers.length}
@@ -39,7 +44,7 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
       <div className="remote-videos-box" ref={remoteBoxRef}>
         {remotePeers
           /* .filter((peer: IPeer) => peer.stream.getTracks().length > 0) */
-          .map((peer: IPeer, i: any, arr: any) => {
+          .map((peer: IPeer, _i: any, _arr: any) => {
             return <RemoteVideo key={uuid()} remoteStream={peer.stream} />;
           })}
       </div>

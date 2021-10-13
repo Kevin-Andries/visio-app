@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { useHistory } from "react-router-dom";
-import jwt from "jsonwebtoken";
+//import jwt from "jsonwebtoken";
 // Components
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -31,7 +31,8 @@ const Room = () => {
   //const [socket, setSocket] = useState<any>(null);
   const socketRef = useRef<Socket | undefined>();
   const [roomId] = useState(history.location.pathname.substring(1));
-  const [pc, setPc] = useState<IPeer[]>([]);
+  const [, setPc] = useState<IPeer[]>([]);
+  const [update, setUpdate] = useState(true);
   const pcRef = useRef<IPeer[]>([]);
   //const socketInitializedRef = useRef(false);
 
@@ -53,10 +54,7 @@ const Room = () => {
       } else {
         //console.log("Data from token:", jwt.decode(await res.json()));
         res = await res.json();
-        const data = jwt.decode(res.token);
-        console.log("roomId:", roomId);
-        dispatch(joinRoomAction({ roomId, token: res.token }));
-        console.log("Here", res.token, data);
+        dispatch(joinRoomAction({ roomId: res.roomId, token: res.token }));
         console.log("%c WELCOME", "color: yellow; background: blue; font-size: 20px");
         setLoading(false);
       }
@@ -66,9 +64,9 @@ const Room = () => {
   /*************************************************************************************************************************/
   /*************************************************************************************************************************/
 
-  useEffect(() => {
+  /* useEffect(() => {
     pcRef.current = pc;
-  });
+  }); */
 
   /*************************************************************************************************************************/
   /*************************************************************************************************************************/
@@ -146,7 +144,9 @@ const Room = () => {
 
       // Save new peer conenction and re-render
       console.log("SETTING NEW PEER");
-      setPc((prev) => [...prev, newPeer]);
+      pcRef.current.push(newPeer);
+      //setPc((prev) => [...prev, newPeer]);
+      setUpdate((prev) => !prev);
     },
     [state.media]
   );
@@ -210,6 +210,10 @@ const Room = () => {
   /*************************************************************************************************************************/
   /*************************************************************************************************************************/
 
+  console.log("%c BEFORE RENDER", "color: yellow");
+  console.log(pcRef.current);
+  console.log("%c -------------------", "color: yellow");
+
   return loading ? (
     <p>Loading</p>
   ) : (
@@ -218,7 +222,7 @@ const Room = () => {
       <h2 className="text-center font-bold text-3xl">ROOM NAME</h2>
       {!state.username && <SetUsernameModal />}
       <div className="flex flex-col sm:flex-row" style={{ height: "90%" }}>
-        <VideoStreamingSpace localStream={state.media} remotePeers={pc} />
+        <VideoStreamingSpace localStream={state.media} remotePeers={pcRef.current} update={update} />
         <Chat socket={socketRef.current!} />
       </div>
       <Footer />

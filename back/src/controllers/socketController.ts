@@ -39,8 +39,7 @@ io.on("connection", (socket) => {
     if (tokenData) socket.to(tokenData.roomId).emit("msg", { author, authorId: socket.id, msgText });
   });
 
-  /* socket.on("disconnect", (roomId) => {
-      console.log(`Closed socket: ${socket.id}`);
-      socket.to(roomId).emit("user-left", socket.id);
-    }); */
+  socket.on("disconnect", () => {
+    console.log(`Closed socket: ${socket.id}`);
+  });
 });
