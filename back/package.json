@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "start": "nodemon ./dist/server.js",
-    "start prod": "node ./dist/server.js"
+    "prod": "node ./dist/server.js"
   },
   "keywords": [],
   "author": "",
