@@ -1,4 +1,4 @@
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import { server } from "../app";
 import { verify } from "../utils/jwt";
 
