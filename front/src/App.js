@@ -8,12 +8,17 @@ import Home from "./views/Home";
 //import Room from "./views/Room";
 import RoomClass from "./views/RoomClass";
 import Contact from "./views/Contact";
+import { useEffect } from "react";
 
 // TODO: CSS
 // TODO: proper errors handling
 
 function App() {
   //const { state, dispatch } = useContext(ContextState);
+
+  useEffect(() => {
+    console.log("URL API: " + process.env.REACT_APP_API_URL);
+  }, []);
 
   // We request user's permission to use microphone and webcam on start
   // and check if there is a username in localStorage
