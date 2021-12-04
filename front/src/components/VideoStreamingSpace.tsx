@@ -10,7 +10,7 @@ import { IPeer } from "../views/Room";
 interface IProps {
   localStream: MediaStream | null;
   remotePeers: IPeer[];
-  update: Boolean;
+  update?: Boolean;
 }
 
 const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
@@ -18,10 +18,14 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
   const remoteBoxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("%c VIDEO STREAMING SPACE RENDERED:", "color: #f33ff6");
+    console.log(localStream, remotePeers);
+  }, [localStream, remotePeers]);
+
+  useEffect(() => {
     if (localVideoRef.current) {
       const tracks = localStream?.getTracks();
       if (tracks) {
-        console.log("TRACKS", tracks);
         const newMedia = new MediaStream();
         newMedia.addTrack(tracks![1]);
         localVideoRef.current.srcObject = newMedia;
@@ -29,16 +33,16 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
     }
   });
 
-  console.log("%c BEFORE MAP", "color: lightgreen");
+  /* console.log("%c BEFORE MAP", "color: lightgreen");
   console.log(remotePeers);
-  console.log("%c -------------------", "color: lightgreen");
+  console.log("%c -------------------", "color: lightgreen"); */
 
   return (
     <StyledVideoSpace
       nb={remotePeers.length}
       parentHeight={remoteBoxRef.current?.clientHeight}
       className="rounded-xl ml-5 p-5 h-full w-full flex flex-col items-center border-2">
-      <div className="local-video-box mb-3">
+      <div className="local-video-box mb-3 flex w-full">
         <video autoPlay playsInline ref={localVideoRef}></video>
       </div>
       <div className="remote-videos-box" ref={remoteBoxRef}>
@@ -60,13 +64,13 @@ const StyledVideoSpace = styled.div<{ nb: number; parentHeight: number | undefin
 
   .local-video-box {
     height: 25%;
-    width: 15rem;
+    justify-content: center;
 
     & video {
       border: 2px solid salmon;
       padding: 0.2rem;
       height: 100%;
-      width: 100%;
+      width: 15rem;
     }
   }
 

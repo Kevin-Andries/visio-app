@@ -12,16 +12,16 @@ const initialState: IState = {
   media: null,
   loadingMedia: true,
   roomId: "",
-  username: "",
+  username: localStorage.getItem("username") || "",
   token: "",
 };
 
-interface IPayload {
+interface IAction {
   type: string;
   payload: any;
 }
 
-const reducer = (state: IState, action: IPayload) => {
+function reducer(state: IState, action: IAction) {
   switch (action.type) {
     case "SET_MEDIA":
       return {
@@ -51,12 +51,16 @@ const reducer = (state: IState, action: IPayload) => {
         username: action.payload,
       };
     case "RESET":
-      return initialState;
+      return {
+        ...initialState,
+        media: state.media,
+        loadingMedia: state.loadingMedia,
+      };
     default:
       console.error("Action not found in reducer");
       return state;
   }
-};
+}
 
 export const ContextState = createContext<IState | undefined>(undefined);
 

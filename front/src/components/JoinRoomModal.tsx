@@ -1,32 +1,39 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { joinRoom } from "../api/api";
+import { ContextState } from "../state/Provider";
 
 interface IProps {
   toggleJoinRoomModal: any;
 }
 
+const roomIdPattern = /[a-z]-[a-z]-[a-z]-[a-z]-[a-z]/i;
+
 const JoinRoomModal = ({ toggleJoinRoomModal }: IProps) => {
+  const { state, dispatch } = useContext<any>(ContextState);
   const history = useHistory();
   const [roomId, setRoomId] = useState("");
   const [error, setError] = useState(false);
 
   const handleChange = (e: any) => {
     setRoomId(e.target.value);
+    if (error) setError(false);
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+
+    if (!roomIdPattern.test(roomId)) {
+      setError(true);
+    }
+
     handleJoinRoomSubmit(roomId);
   };
 
   const handleJoinRoomSubmit = async (roomId: string) => {
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/room/${roomId}`);
-
-    if (res.status === 404) {
-      return setError(true);
-    }
-
-    history.push(`/${roomId}`);
+    joinRoom(roomId, state, dispatch, history)
+      .then((res) => history.push(`/${res.roomId}`))
+      .catch(() => setError(true));
   };
 
   return (

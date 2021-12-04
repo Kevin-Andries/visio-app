@@ -7,9 +7,11 @@ export default function globalErrorHandler(err: AppError, _req: Request, res: Re
   err.code = err.code || 500;
   err.message = err.message || DEFAULT_ERR_MESSAGE;
 
-  console.error("\x1b[31m%s\x1b[0m", "-----ERROR-----");
-  console.error(err);
-  console.error("\x1b[31m%s\x1b[0m", "-----END ERROR-----");
+  if (!err.isOperational) {
+    console.error("\x1b[31m%s\x1b[0m", "-----ERROR-----");
+    console.error(err);
+    console.error("\x1b[31m%s\x1b[0m", "-----END ERROR-----");
+  }
 
   return res.status(err.code).json({
     message: err.message,

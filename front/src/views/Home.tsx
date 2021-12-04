@@ -71,7 +71,7 @@ const Home = () => {
             )}
           </div>
         )}
-        <button onClick={handleCreateRoom} className="text-white bg-blue-600 font-light text-2xl rounded-lg p-2 px-8 shadow-xl">
+        <button onClick={handleCreateRoom} className="h-16 text-white bg-blue-600 font-light text-3xl rounded-lg p-2 px-8 shadow-xl">
           Create a room
         </button>
         <button

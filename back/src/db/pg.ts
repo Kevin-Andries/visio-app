@@ -12,7 +12,7 @@ enum Queries {
 
 async function getRoom(roomId: string) {
   return Pool.query(Queries.getRoom, [roomId])
-    .then((res) => (res.rowCount === 1 ? res.rows[0] : res.rows))
+    .then((res) => (res.rowCount === 1 ? res.rows[0] : null))
     .catch((err) => console.error(err));
 }
 
