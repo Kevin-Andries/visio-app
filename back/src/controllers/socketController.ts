@@ -8,6 +8,7 @@ function print(msg: string) {
 
 const io = new Server(server, {
   cors: {
+    // TODO: put right url for cors
     origin: "*",
   },
 });
@@ -15,13 +16,12 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log(`Socket connection: ${socket.id}`);
 
-  socket.on("join-room", (roomId: any, cb: any) => {
+  socket.on("join-room", (roomId: any) => {
     print("join-room");
 
     // A client joins room socket
     socket.join(roomId);
     socket.to(roomId).emit("new-peer-joined", socket.id);
-    cb();
   });
 
   /**  WebRTC **/

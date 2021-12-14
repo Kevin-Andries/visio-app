@@ -20,7 +20,8 @@ require("./controllers/socketController");
 // Middlewares
 app.use(morgan(IS_PROD ? "tiny" : "dev"));
 app.use(express.json({ limit: "5kb" }));
-app.use(cors({ origin: IS_PROD ? "https://confident-chandrasekhar-8d050a.netlify.app" : "*" }));
+// TODO: put right url for cors
+app.use(cors({ origin: IS_PROD ? "*" : "*" }));
 app.use(helmet());
 app.use(compression());
 
