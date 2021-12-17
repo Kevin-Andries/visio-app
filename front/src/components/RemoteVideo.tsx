@@ -13,7 +13,7 @@ const RemoteVideo = ({ remoteStream }: IProps) => {
     }
   });
 
-  return <video autoPlay playsInline ref={videoRef}></video>;
+  return <video className="videoBoxInside" autoPlay playsInline ref={videoRef}></video>;
 };
 
 export default RemoteVideo;
