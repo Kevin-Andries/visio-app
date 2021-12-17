@@ -53,8 +53,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", (roomId) => {
+  socket.on("leaving", (roomId) => {
     socket.to(roomId).emit("user-left", socket.id);
+  });
+
+  socket.on("disconnect", () => {
     console.log(`Closed socket: ${socket.id}`);
   });
 });
