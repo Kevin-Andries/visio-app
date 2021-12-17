@@ -8,7 +8,7 @@ import { ContextState } from "../state/Provider";
 import { IMessage } from "../utils/interfaces";
 
 interface IProps {
-  socket: Socket;
+  socket: Socket | null;
 }
 
 const Chat = ({ socket }: IProps) => {
@@ -26,7 +26,6 @@ const Chat = ({ socket }: IProps) => {
   useEffect(() => {
     if (socket) {
       socket.on("msg", ({ author, authorId, msgText }) => {
-        console.log("CHAT MSG RECEIVED");
         addMsg({ author, authorId, msgText });
       });
     }

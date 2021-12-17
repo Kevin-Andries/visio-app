@@ -5,22 +5,17 @@ import styled from "styled-components";
 // Components
 import RemoteVideo from "./RemoteVideo";
 // Misc
-import { IPeer } from "../views/Room";
+import { MyPeer } from "../views/Room";
 
 interface IProps {
   localStream: MediaStream | null;
-  remotePeers: IPeer[];
+  remotePeers: MyPeer[];
   update?: Boolean;
 }
 
 const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteBoxRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    console.log("%c VIDEO STREAMING SPACE RENDERED:", "color: #f33ff6");
-    console.log(localStream, remotePeers);
-  }, [localStream, remotePeers]);
 
   useEffect(() => {
     if (localVideoRef.current) {
@@ -33,10 +28,6 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
     }
   });
 
-  /* console.log("%c BEFORE MAP", "color: lightgreen");
-  console.log(remotePeers);
-  console.log("%c -------------------", "color: lightgreen"); */
-
   return (
     <StyledVideoSpace
       nb={remotePeers.length}
@@ -46,11 +37,9 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
         <video autoPlay playsInline ref={localVideoRef}></video>
       </div>
       <div className="remote-videos-box" ref={remoteBoxRef}>
-        {remotePeers
-          /* .filter((peer: IPeer) => peer.stream.getTracks().length > 0) */
-          .map((peer: IPeer, _i: any, _arr: any) => {
-            return <RemoteVideo key={uuid()} remoteStream={peer.stream} />;
-          })}
+        {remotePeers.map((peer: MyPeer, _i: any, _arr: any) => {
+          return <RemoteVideo key={uuid()} remoteStream={peer.stream} />;
+        })}
       </div>
     </StyledVideoSpace>
   );

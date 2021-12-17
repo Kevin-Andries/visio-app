@@ -10,7 +10,7 @@ interface IProps {
 const roomIdPattern = /[a-z]-[a-z]-[a-z]-[a-z]-[a-z]/i;
 
 const JoinRoomModal = ({ toggleJoinRoomModal }: IProps) => {
-  const { state, dispatch } = useContext<any>(ContextState);
+  const { state } = useContext<any>(ContextState);
   const history = useHistory();
   const [roomId, setRoomId] = useState("");
   const [error, setError] = useState(false);
@@ -31,7 +31,7 @@ const JoinRoomModal = ({ toggleJoinRoomModal }: IProps) => {
   };
 
   const handleJoinRoomSubmit = async (roomId: string) => {
-    joinRoom(roomId, state, dispatch, history)
+    joinRoom(roomId, state.username)
       .then((res) => history.push(`/${res.roomId}`))
       .catch(() => setError(true));
   };
