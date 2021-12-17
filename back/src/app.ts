@@ -9,6 +9,7 @@ import compression from "compression";
 import roomRouter from "./routers/roomRouter";
 // Misc
 import globalErrorHandler from "./controllers/errorController";
+import "./db/pg";
 
 const IS_PROD = process.env.NODE_ENV === "development" ? false : true;
 

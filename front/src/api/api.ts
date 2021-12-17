@@ -1,14 +1,12 @@
-import { joinRoomAction } from "../state/actions";
-
 // join room socket for chat
-export async function joinRoom(roomId: string, state: any, dispatch: any, history: any) {
+export async function joinRoom(roomId: string, username: string) {
   let res: any = await fetch(`${process.env.REACT_APP_API_URL}/room/${roomId}`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ author: state.username }),
+    body: JSON.stringify({ author: username }),
   });
 
   if (res.status === 404) {
@@ -16,8 +14,7 @@ export async function joinRoom(roomId: string, state: any, dispatch: any, histor
     throw new Error();
   } else {
     res = await res.json();
-    dispatch(joinRoomAction({ roomId: res.roomId, token: res.token }));
-    console.log("%c WELCOME", "color: yellow; background: blue; font-size: 20px");
-    return res;
+    console.log("%c WELCOME TO THE ROOM", "color: yellow; background: blue; font-size: 20px");
+    return { roomId: res.roomId, token: res.token };
   }
 }

@@ -12,7 +12,8 @@ const initialState: IState = {
   media: null,
   loadingMedia: true,
   roomId: "",
-  username: localStorage.getItem("username") || "",
+  username: "John Doe",
+  // username: localStorage.getItem("username") || "",
   token: "",
 };
 

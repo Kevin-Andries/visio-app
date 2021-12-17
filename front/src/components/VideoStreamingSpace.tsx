@@ -31,9 +31,6 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
     window.addEventListener("resize", updateBoxesWidthAndHeight);
     updateBoxesWidthAndHeight();
 
-    console.log("%c VIDEO STREAMING SPACE RENDERED:", "color: #f33ff6");
-    console.log(localStream, remotePeers);
-
     let currentNumberOfPeers = remotePeers.length;
 
     // We update the gris according the number of peers present in the video streaming space
@@ -121,10 +118,6 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
     }
   };
 
-  /* console.log("%c BEFORE MAP", "color: lightgreen");
-  console.log(remotePeers);
-  console.log("%c -------------------", "color: lightgreen"); */
-
   return (
     <StyledVideoSpace
       nb={remotePeers.length}
@@ -134,7 +127,7 @@ const VideoStreamingSpace = ({ localStream, remotePeers }: IProps) => {
         <div className="videoBox" style={{ width: videosWidth + "%", height: videoHeight + "%" }}>
           <video autoPlay playsInline ref={localVideoRef} className="videoBoxInside"></video>
         </div>
-        {remotePeers.map((peer: IPeer, _i: any, _arr: any) => {
+        {remotePeers.map((peer: any, _i: any, _arr: any) => {
           return (
             <div className="videoBox" ref={remoteBoxRef} style={{ width: videosWidth + "%", height: videoHeight + "%" }}>
               <RemoteVideo key={uuid()} remoteStream={peer.stream} />

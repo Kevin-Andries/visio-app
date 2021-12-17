@@ -2,12 +2,14 @@ import { Pool as PgPool } from "pg";
 
 const Pool = new PgPool({ ssl: { rejectUnauthorized: process.env.NODE_ENV === "development" ? false : true } });
 
+Pool.connect()
+  .then(() => console.log("Connected to PG"))
+  .catch((_err) => console.log("ERROR PG"));
+
 enum Queries {
   getAllRooms = "SELECT COUNT(*) FROM rooms",
   createRoom = "INSERT INTO rooms VALUES($1)",
   getRoom = "SELECT * FROM rooms WHERE rooms.id = $1",
-  //createTable = "CREATE TABLE rooms (id varchar(100) PRIMARY KEY)",
-  //delete = "DROP TABLE rooms"
 }
 
 async function getRoom(roomId: string) {

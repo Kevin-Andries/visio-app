@@ -1,7 +1,12 @@
 export const RTCConfig = {
   iceServers: [
     {
-      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+      urls: ["stun:stun1.l.google.com:19302"],
+    },
+    {
+      urls: "turn:numb.viagenie.ca:3478",
+      username: "kevin.andries@yahoo.fr",
+      credential: "azerty",
     },
   ],
   iceCandidatePoolSize: 10,

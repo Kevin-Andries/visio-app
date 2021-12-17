@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
-    "start": "node ./dist/server.js",
-    "prod": "node ./dist/server.js",
+    "start": "nodemon ./dist/server.js",
     "build": "tsc"
   },
   "keywords": [],
